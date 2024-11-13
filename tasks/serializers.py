@@ -1,7 +1,7 @@
-from app import db, ma
-
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from .models import Task
 
-class TaskSchema(ma.SQLAlchemyAutoSchema):
+class TaskSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Task
+        include_fk = True

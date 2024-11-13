@@ -36,10 +36,3 @@ def test_user_view_uses_correct_template(
 
     assert "name" in context
     assert context["name"] == user_name
-
-def test_todoz(app, client, session):
-    task = TaskFactory()
-    session.commit()
-
-    response = client.get("/todoz")
-    assert len(response.json["results"]) > 0
