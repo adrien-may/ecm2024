@@ -36,7 +36,7 @@ class TasksById(MethodView):
         except NoResultFound:
             abort(404, message="Task not found")
 
-    @task_blueprint.arguments(TaskSchema(only=["title", "done"]))
+    @task_blueprint.arguments(TaskSchema(only=["title"]))
     @task_blueprint.response(200, TaskSchema)
     def put(self, update_data, task_id):
         try:
@@ -51,6 +51,20 @@ class TasksById(MethodView):
         except Exception as e:
             abort(400, message="An error occurred")
         return task
+
+    @task_blueprint.arguments(TaskSchema(only=["done"]))
+    @task_blueprint.response(200, TaskSchema)
+    def patch(self, update_data, task_id):
+        """Update existing task"""
+        try:
+            task = db.session.get_one(Task, task_id)
+        except NoResultFound:
+            abort(404, message="Task not found")
+        task.done = update_data["done"]
+        db.session.add(task)
+        db.session.commit()
+        return task
+
 
     @task_blueprint.response(204)
     def delete(self, task_id):

@@ -1,12 +1,12 @@
 import os
 import warnings
 from flask import Flask, render_template
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from flask_marshmallow import Marshmallow
 from flask_smorest import Api, Blueprint, abort
-
 
 class Base(DeclarativeBase):
     pass
@@ -24,6 +24,8 @@ def create_app():
         message="Multiple schemas resolved to the name "
     )
     app = Flask(__name__)
+    CORS(app)
+
     app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'data.sqlite')}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['API_TITLE'] = 'My ECM API'

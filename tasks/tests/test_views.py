@@ -62,6 +62,26 @@ def test_tasks_update_one(client, session):
     )
     assert response.status_code == 400
 
+def test_tasks_patch_one(app, client, session):
+    new_title = "new_title"
+    # Ensure no task persist with this title
+    session.query(Task).filter(Task.title == new_title).delete()
+    task = TaskFactory()
+    session.commit()
+    task2 = session.query(Task).filter(Task.title == task.title).first()
+    response = client.patch(
+        f"/tasks/{task2.id}",
+        data=json.dumps({"done": True}),
+        content_type="application/json",
+    )
+    assert response.status_code == 200
+    response = client.patch(
+        f"/tasks/{task2.id + 10}",
+        data=json.dumps({"done": True}),
+        content_type="application/json",
+    )
+    assert response.status_code == 404
+
 def test_tasks_delete_one(client, session):
     task = TaskFactory()
     session.commit()
